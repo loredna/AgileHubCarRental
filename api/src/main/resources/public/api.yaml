@@ -1,0 +1,256 @@
+openapi: 3.0.1
+info:
+  title: Car Hire API
+  version: 0.1.0
+  contact:
+    name: Loredana Costea
+  description: Car Hire API
+servers:
+  - url: http://localhost:{port}
+    description: local environment
+    variables:
+      port:
+        default: '8080'
+tags:
+  - name: user
+    description: user endpoint
+paths:
+  /user:
+    get:
+      tags:
+        - user
+      summary: get users
+      description: returns a list of all the users, without any filtering
+      operationId: getUsers
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserDTO'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    post:
+      tags:
+        - user
+      summary: add a new user
+      description: adds a new user and returns it
+      operationId: addUser
+      requestBody:
+        description: The data of the user to insert. The id and status will be generated automatically.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDTO'
+            example:
+              email: loredana.costea@gmail.com
+              password: 1234
+              username: loredna
+              firstName: Costea
+              lastName: Loredana
+              country: Romania
+              licenseNumber: 999888
+      responses:
+        '200':
+          description: the created user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDTO'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    patch:
+      tags:
+        - user
+      summary: update an existing user
+      description: updates the first name, last name, country, license number, status of an existing user and returns it
+      operationId: updateUser
+      requestBody:
+        description: The data of the user to update. The id can't be changed.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDTO'
+            example:
+              lastName: Loredana Iuliana
+              id: 1
+      responses:
+        '200':
+          description: the created user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDTO'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /user/{id}:
+    get:
+      tags:
+        - user
+      summary: get a user
+      description: returns the details for a user, based on id
+      operationId: getUser
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDTO'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags:
+        - user
+      summary: removes a user
+      description: deletes a user identified by id
+      operationId: removeUser
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: success
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
+components:
+  responses:
+    Unauthorized:
+      description: unauthorized
+    BadRequest:
+      description: bad request
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/ValidationDTO'
+    ServerError:
+      description: internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorDTO'
+  schemas:
+    ValidationDTO:
+      type: object
+      properties:
+        code:
+          type: string
+        field:
+          type: string
+        description:
+          type: string
+    ErrorDTO:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+    UserDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          description: id of the user
+        email:
+          type: string
+          description: email of the user
+        password:
+          type: string
+          description: password of the user
+        username:
+          type: string
+          description: username of the user
+        firstName:
+          type: string
+          description: first name of the user
+        lastName:
+          type: string
+          description: last name of the user
+        country:
+          type: string
+          description: country of residence of the user
+        licenseNumber:
+          type: string
+          description: license number of the user
+        status:
+          type: string
+          enum:
+            - ACTIVE
+            - DELETED
+          description: status of the user
+    CarDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          description: id of the car
+        make:
+          type: string
+          example: BMW, FORD, AUDI
+          description: make of the car
+        model:
+          type: string
+          example: X5, 7 Series, A3, I8
+          description: model of the car
+        year:
+          type: integer
+          description: year of the car
+        mileage:
+          type: integer
+          format: int64
+          description: mileage of the car
+        fuel:
+          type: string
+          example: Diesel
+          description: fuel type of the car
+        sizeClass:
+          type: string
+          example: Minicompact, Compact, Mid-Size, Large
+          description: size class of the car
+        status:
+          type: string
+          enum:
+            - ACTIVE
+            - DELETED
+          description: status of the car
