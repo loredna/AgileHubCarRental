@@ -6,3 +6,9 @@
 /user.management/target/
 /.idea/
 /car.hire.iml
+/api/api.iml
+/boot/boot.iml
+/fleet.management/fleet.management.iml
+/rental/rental.iml
+/user.management/user.management.iml
+/AgileHubCarRental.iml
