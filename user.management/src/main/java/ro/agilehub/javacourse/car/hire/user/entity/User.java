@@ -17,6 +17,10 @@ public class User {
     @Field("_id")
     private ObjectId id;
 
+    private String email;
+
+    private String password;
+
     private String username;
 
     private String firstName;
@@ -28,5 +32,7 @@ public class User {
     private String licenseNumber;
 
     private UserDTO.StatusEnum status;
+
+    private String title;
 
 }

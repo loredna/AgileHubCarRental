@@ -13,6 +13,10 @@ public class UserDO {
 
     private ObjectId id;
 
+    private String email;
+
+    private String password;
+
     private String username;
 
     private String firstName;
@@ -24,5 +28,7 @@ public class UserDO {
     private String licenseNumber;
 
     private UserDTO.StatusEnum status;
+
+    private String title;
 
 }

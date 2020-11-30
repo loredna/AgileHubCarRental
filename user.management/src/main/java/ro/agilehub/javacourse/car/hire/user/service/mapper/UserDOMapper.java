@@ -11,12 +11,6 @@ public interface UserDOMapper {
 
     @Mapping(target = "country", source = "userCountry")
     @Mapping(target = "id", source = "user.id")
-    @Mapping(target = "username", source = "user.username")
-    @Mapping(target = "firstName", source = "user.firstName")
-    @Mapping(target = "lastName", source = "user.lastName")
-    @Mapping(target = "licenseNumber", source = "user.licenseNumber")
-    @Mapping(target = "status", source = "user.status")
     UserDO toDomainObject(User user, UserCountry userCountry);
-
 }
 

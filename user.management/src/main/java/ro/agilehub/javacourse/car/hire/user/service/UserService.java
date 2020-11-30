@@ -13,4 +13,7 @@ public interface UserService {
 
     UserDO addUser(User user);
 
+    UserDO updateUser(User user);
+
+    void removeUser(String id);
 }
