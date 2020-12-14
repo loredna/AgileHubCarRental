@@ -1,7 +1,6 @@
 package ro.agilehub.javacourse.car.hire.user.controller.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import org.mapstruct.*;
 import ro.agilehub.javacourse.car.hire.api.model.UserDTO;
 import ro.agilehub.javacourse.car.hire.user.domain.UserDO;
 import ro.agilehub.javacourse.car.hire.user.service.mapper.ObjectIdMapper;
@@ -10,8 +9,11 @@ import ro.agilehub.javacourse.car.hire.user.service.mapper.ObjectIdMapper;
 public interface UserDTOMapper {
 
     @Mapping(target = "id", source = "userDO.id")
-    @Mapping(target = "password", constant = "***")
     @Mapping(target = "country", source = "userDO.country.name")
-    UserDTO toDomainObject(UserDO userDO);
+    UserDTO toUserDTO(UserDO userDO);
+
+    @Mapping(target = "id", source = "userDTO.id")
+    @Mapping(target = "country", ignore = true)
+    UserDO toUserDO(UserDTO userDTO);
 }
 

@@ -4,6 +4,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ro.agilehub.javacourse.car.hire.user.controller.error.EmailNotFoundException;
+import ro.agilehub.javacourse.car.hire.user.domain.UserCountryDO;
 import ro.agilehub.javacourse.car.hire.user.domain.UserDO;
 import ro.agilehub.javacourse.car.hire.user.entity.User;
 import ro.agilehub.javacourse.car.hire.user.repository.UserCountryDAO;
@@ -15,9 +16,7 @@ import ro.agilehub.javacourse.car.hire.user.service.mapper.UserDOMapper;
 import java.util.List;
 import java.util.Optional;
 
-import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toList;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -50,42 +49,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDO addUser(User user) {
-        if (user.getEmail() == null) {
+    public UserDO addUser(UserDO userDO) {
+        if (userDO.getEmail() == null) {
             throw new EmailNotFoundException("No email found!");
         }
-        return map(userDAO.save(user));
+        return map(userDAO.save(mapper.toUser(userDO)));
     }
 
     @Override
-    public UserDO updateUser(User user) {
-        Optional<User> optionalUser = userDAO.findById(user.getId());
-
+    public UserDO updateUser(UserDO userDO) {
+        Optional<User> optionalUser = userDAO.findById(userDO.getId());
         optionalUser
-                .ifPresent(updatedUser -> {
-                            if (isNotBlank(user.getFirstName())) {
-                                updatedUser.setFirstName(user.getFirstName());
-                            }
-                            if (isNotBlank(user.getLastName())) {
-                                updatedUser.setLastName(user.getLastName());
-                            }
-                            if (isNotBlank(user.getCountry())) {
-                                updatedUser.setCountry(user.getCountry());
-                            }
-                            if (isNotBlank(user.getLicenseNumber())) {
-                                updatedUser.setLicenseNumber(user.getLicenseNumber());
-                            }
-                            if (!isNull(user.getStatus())) {
-                                updatedUser.setStatus(user.getStatus());
-                            }
-                            if (!isNull(user.getTitle())) {
-                                updatedUser.setTitle(user.getTitle());
-                            }
-                        }
-                );
+                .ifPresent(user -> mapper.update(userDO, user));
         return optionalUser
                 .map(updatedUser -> map(userDAO.save(updatedUser)))
                 .orElseThrow();
+    }
+
+    @Override
+    public UserCountryDO findByName(String country) {
+        return countryMapper.toDomainObject(userCountryDAO.findByName(country));
     }
 
     @Override
@@ -98,6 +81,6 @@ public class UserServiceImpl implements UserService {
     private UserDO map(User user) {
         var userCountry = userCountryDAO
                 .findByName(user.getCountry());
-        return mapper.toDomainObject(user, userCountry);
+        return mapper.toUserDO(user, userCountry);
     }
 }

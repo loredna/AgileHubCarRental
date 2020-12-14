@@ -1,5 +1,6 @@
 package ro.agilehub.javacourse.car.hire.user.service;
 
+import ro.agilehub.javacourse.car.hire.user.domain.UserCountryDO;
 import ro.agilehub.javacourse.car.hire.user.domain.UserDO;
 import ro.agilehub.javacourse.car.hire.user.entity.User;
 
@@ -11,9 +12,11 @@ public interface UserService {
 
     UserDO findById(String id);
 
-    UserDO addUser(User user);
+    UserDO addUser(UserDO user);
 
-    UserDO updateUser(User user);
+    UserDO updateUser(UserDO user);
+
+    UserCountryDO findByName(String country);
 
     void removeUser(String id);
 }
