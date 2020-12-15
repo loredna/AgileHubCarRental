@@ -97,7 +97,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void removeUser(String id) {
-        User user = User.builder().id(new ObjectId(id)).build();
+        User user = new User();
+        user.setId(new ObjectId(id));
         userRepository.delete(user);
     }
 

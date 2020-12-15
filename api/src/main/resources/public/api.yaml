@@ -65,7 +65,7 @@ paths:
               country: Romania
               licenseNumber: 999888
       responses:
-        '200':
+        '201':
           description: the created user
           content:
             application/json:
@@ -97,7 +97,7 @@ paths:
               id: 1
       responses:
         '200':
-          description: the created user
+          description: the updated user
           content:
             application/json:
               schema:
@@ -520,8 +520,7 @@ components:
           type: string
           description: last name of the user
         country:
-          type: string
-          description: country of residence of the user
+          $ref: '#/components/schemas/CountryDTO'
         licenseNumber:
           type: string
           description: license number of the user
@@ -534,6 +533,20 @@ components:
         title:
           type: string
           description: title of the user
+    CountryDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: country id
+        name:
+          type: string
+          example: Romania
+          description: the name of the country
+        isoCode:
+          type: string
+          example: ROU
+          description: the iso code of the country
     CarDTO:
       type: object
       properties:

@@ -10,7 +10,6 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import ro.agilehub.javacourse.car.hire.api.model.UserDTO;
 
 @Data
-@Builder
 @EqualsAndHashCode(of = "_id")
 @Document(collection = "user")
 public class User {

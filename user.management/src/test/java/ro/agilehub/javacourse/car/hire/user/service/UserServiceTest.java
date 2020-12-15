@@ -51,11 +51,10 @@ public class UserServiceTest {
         ObjectId objectId = new ObjectId("507f191e810c19729de860ea");
         UserCountry userCountry = UserCountry.builder().name("RO").build();
 
-        User user = User.builder()
-                .id(objectId)
-                .email("test@gmail.com")
-                .country("RO")
-                .build();
+        User user = new User();
+        user.setId(objectId);
+        user.setEmail("test@gmail.com");
+        user.setCountry("RO");
 
         when(userRepository.findById(objectId)).thenReturn(Optional.of(user));
         when(userCountryRepository.findByName("RO")).thenReturn(userCountry);
@@ -85,7 +84,8 @@ public class UserServiceTest {
     @Test
     public void addUser() {
         UserDO userDO = UserDO.builder().email("test@gmail.com").username("test").build();
-        User user = User.builder().country("RO").build();
+        User user = new User();
+        user.setCountry("RO");
         UserCountry userCountry = UserCountry.builder().name("RO").build();
 
         when(userRepository.findByEmail(Mockito.anyString())).thenReturn(null);
@@ -134,7 +134,8 @@ public class UserServiceTest {
     @Test
     public void updateUser() {
         UserDO userDO = UserDO.builder().email("test@gmail.com").username("test").build();
-        User user = User.builder().country("RO").build();
+        User user = new User();
+        user.setCountry("RO");
 
         when(userRepository.findById(any())).thenReturn(Optional.of(user));
         Mockito.doNothing().when(mapper).update(any(), any());

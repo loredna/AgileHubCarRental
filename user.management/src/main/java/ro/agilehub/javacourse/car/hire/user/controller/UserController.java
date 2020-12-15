@@ -1,5 +1,6 @@
 package ro.agilehub.javacourse.car.hire.user.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +16,7 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 
 @RestController
+@RequiredArgsConstructor
 public class UserController implements UserApi {
 
     @Autowired
@@ -26,7 +28,6 @@ public class UserController implements UserApi {
     @Override
     public ResponseEntity<UserDTO> addUser(@Valid UserDTO userDTO) {
         UserDO userDO = mapper.toUserDO(userDTO);;
-        userDO.setCountry(userService.findByName(userDTO.getCountry()));
         return ResponseEntity.ok(mapper.toUserDTO(userService.addUser(userDO)));
     }
 
@@ -47,7 +48,6 @@ public class UserController implements UserApi {
     @Override
     public ResponseEntity<UserDTO> updateUser(@Valid UserDTO userDTO) {
         UserDO userDO = mapper.toUserDO(userDTO);
-        userDO.setCountry(userService.findByName(userDTO.getCountry()));
         return ResponseEntity.ok(mapper.toUserDTO(userService.updateUser(userDO)));
     }
 

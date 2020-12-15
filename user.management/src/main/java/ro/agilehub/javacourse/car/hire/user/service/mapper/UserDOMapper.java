@@ -19,6 +19,8 @@ public interface UserDOMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
             nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
     @Mapping(target = "country", source = "userDO.country.name")
+    @Mapping(target = "username", ignore = true)
+    @Mapping(target = "password", ignore = true)
     void update(UserDO userDO, @MappingTarget User user);
 }
 
