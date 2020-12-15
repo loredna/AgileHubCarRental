@@ -4,11 +4,13 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ro.agilehub.javacourse.car.hire.user.controller.error.EmailNotFoundException;
+import ro.agilehub.javacourse.car.hire.user.controller.error.UserNotFoundException;
+import ro.agilehub.javacourse.car.hire.user.controller.error.UsernameNotFoundException;
 import ro.agilehub.javacourse.car.hire.user.domain.UserCountryDO;
 import ro.agilehub.javacourse.car.hire.user.domain.UserDO;
 import ro.agilehub.javacourse.car.hire.user.entity.User;
-import ro.agilehub.javacourse.car.hire.user.repository.UserCountryDAO;
-import ro.agilehub.javacourse.car.hire.user.repository.UserDAO;
+import ro.agilehub.javacourse.car.hire.user.repository.UserCountryRepository;
+import ro.agilehub.javacourse.car.hire.user.repository.UserRepository;
 import ro.agilehub.javacourse.car.hire.user.service.UserService;
 import ro.agilehub.javacourse.car.hire.user.service.mapper.UserCountryDOMapper;
 import ro.agilehub.javacourse.car.hire.user.service.mapper.UserDOMapper;
@@ -22,10 +24,10 @@ import static java.util.stream.Collectors.toList;
 public class UserServiceImpl implements UserService {
 
     @Autowired
-    private UserDAO userDAO;
+    private UserRepository userRepository;
 
     @Autowired
-    private UserCountryDAO userCountryDAO;
+    private UserCountryRepository userCountryRepository;
 
     @Autowired
     private UserDOMapper mapper;
@@ -35,14 +37,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDO findById(String id) {
-        return userDAO.findById(new ObjectId(id))
+        return userRepository.findById(new ObjectId(id))
                 .map(this::map)
-                .orElseThrow();
+                .orElseThrow(() -> {
+                    throw new UserNotFoundException("User not found.");
+                });
     }
 
     @Override
     public List<UserDO> findAll() {
-        return userDAO.findAll()
+        return userRepository.findAll()
                 .stream()
                 .map(this::map)
                 .collect(toList());
@@ -50,36 +54,55 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDO addUser(UserDO userDO) {
-        if (userDO.getEmail() == null) {
-            throw new EmailNotFoundException("No email found!");
+        String email = userDO.getEmail();
+        String username = userDO.getUsername();
+        if (email == null) {
+            throw new EmailNotFoundException("No email found.");
         }
-        return map(userDAO.save(mapper.toUser(userDO)));
+        if (username == null) {
+            throw new UsernameNotFoundException("No email found.");
+        }
+        if (userRepository.findByEmail(email) != null) {
+            throw new IllegalArgumentException("Email already exists.");
+        }
+        if (userRepository.findByUsername(username) != null) {
+            throw new IllegalArgumentException("Username already exists.");
+        }
+        return map(userRepository.save(mapper.toUser(userDO)));
     }
 
     @Override
     public UserDO updateUser(UserDO userDO) {
-        Optional<User> optionalUser = userDAO.findById(userDO.getId());
+        if (userRepository.findByEmail(userDO.getEmail()) != null) {
+            throw new IllegalArgumentException("Email already exists.");
+        }
+        if (userRepository.findByUsername(userDO.getUsername()) != null) {
+            throw new IllegalArgumentException("Username already exists.");
+        }
+
+        Optional<User> optionalUser = userRepository.findById(userDO.getId());
         optionalUser
                 .ifPresent(user -> mapper.update(userDO, user));
         return optionalUser
-                .map(updatedUser -> map(userDAO.save(updatedUser)))
-                .orElseThrow();
+                .map(updatedUser -> map(userRepository.save(updatedUser)))
+                .orElseThrow(() -> {
+                    throw new IllegalStateException("Failed to update user.");
+                });
     }
 
     @Override
     public UserCountryDO findByName(String country) {
-        return countryMapper.toDomainObject(userCountryDAO.findByName(country));
+        return countryMapper.toDomainObject(userCountryRepository.findByName(country));
     }
 
     @Override
     public void removeUser(String id) {
-        User user = new User();
-        user.setId(new ObjectId(id));
-        userDAO.delete(user);
+        User user = User.builder().id(new ObjectId(id)).build();
+        userRepository.delete(user);
     }
 
     private UserDO map(User user) {
-        var userCountry = userCountryDAO
+        var userCountry = userCountryRepository
                 .findByName(user.getCountry());
         return mapper.toUserDO(user, userCountry);
     }

@@ -6,5 +6,9 @@ import org.springframework.stereotype.Repository;
 import ro.agilehub.javacourse.car.hire.user.entity.User;
 
 @Repository
-public interface UserDAO extends MongoRepository<User, ObjectId> {
+public interface UserRepository extends MongoRepository<User, ObjectId> {
+
+    User findByEmail(String email);
+
+    User findByUsername(String username);
 }

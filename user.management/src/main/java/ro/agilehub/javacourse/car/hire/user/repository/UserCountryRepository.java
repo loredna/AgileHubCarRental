@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 import ro.agilehub.javacourse.car.hire.user.entity.UserCountry;
 
 @Repository
-public interface UserCountryDAO extends MongoRepository<UserCountry, String>  {
+public interface UserCountryRepository extends MongoRepository<UserCountry, String>  {
 
     UserCountry findByName(String country);
 }

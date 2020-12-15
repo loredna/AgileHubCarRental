@@ -1,5 +1,6 @@
 package ro.agilehub.javacourse.car.hire.user.entity;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.bson.types.ObjectId;
@@ -8,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 @Data
+@Builder
 @EqualsAndHashCode(of = "_id")
 @Document(collection = "country")
 public class UserCountry {
