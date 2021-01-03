@@ -1,4 +1,4 @@
-package ro.agilehub.javacourse.car.hire.user.controller.error;
+package ro.agilehub.javacourse.car.hire.user.exception;
 
 public class UsernameNotFoundException extends RuntimeException {
 

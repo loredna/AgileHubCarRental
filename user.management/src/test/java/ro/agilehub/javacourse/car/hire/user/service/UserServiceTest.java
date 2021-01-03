@@ -1,15 +1,14 @@
 package ro.agilehub.javacourse.car.hire.user.service;
 
-import org.bson.types.ObjectId;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import ro.agilehub.javacourse.car.hire.user.controller.error.EmailNotFoundException;
-import ro.agilehub.javacourse.car.hire.user.controller.error.UserNotFoundException;
-import ro.agilehub.javacourse.car.hire.user.controller.error.UsernameNotFoundException;
+import ro.agilehub.javacourse.car.hire.user.exception.EmailNotFoundException;
+import ro.agilehub.javacourse.car.hire.user.exception.UserNotFoundException;
+import ro.agilehub.javacourse.car.hire.user.exception.UsernameNotFoundException;
 import ro.agilehub.javacourse.car.hire.user.domain.UserCountryDO;
 import ro.agilehub.javacourse.car.hire.user.domain.UserDO;
 import ro.agilehub.javacourse.car.hire.user.entity.User;
@@ -17,8 +16,9 @@ import ro.agilehub.javacourse.car.hire.user.entity.UserCountry;
 import ro.agilehub.javacourse.car.hire.user.repository.UserCountryRepository;
 import ro.agilehub.javacourse.car.hire.user.repository.UserRepository;
 import ro.agilehub.javacourse.car.hire.user.service.impl.UserServiceImpl;
-import ro.agilehub.javacourse.car.hire.user.service.mapper.UserCountryDOMapper;
-import ro.agilehub.javacourse.car.hire.user.service.mapper.UserDOMapper;
+import ro.agilehub.javacourse.car.hire.user.mapper.UserCountryDOMapper;
+import ro.agilehub.javacourse.car.hire.user.mapper.UserDOMapper;
+import ro.agilehub.javacourse.car.hire.user.util.TestUtil;
 
 import java.util.*;
 
@@ -48,53 +48,38 @@ public class UserServiceTest {
 
     @Test
     public void findById() {
-        ObjectId objectId = new ObjectId("507f191e810c19729de860ea");
-        UserCountry userCountry = UserCountry.builder().name("RO").build();
+        when(userRepository.findById(any())).thenReturn(Optional.of(new User()));
+        when(userCountryRepository.findByName(any())).thenReturn(new UserCountry());
+        when(mapper.toUserDO(any(), any())).thenReturn(new UserDO());
 
-        User user = new User();
-        user.setId(objectId);
-        user.setEmail("test@gmail.com");
-        user.setCountry("RO");
-
-        when(userRepository.findById(objectId)).thenReturn(Optional.of(user));
-        when(userCountryRepository.findByName("RO")).thenReturn(userCountry);
-        when(mapper.toUserDO(user, userCountry)).thenReturn(new UserDO());
-
-        assertNotNull(userService.findById(objectId.toString()));
+        assertNotNull(userService.findById(TestUtil.getObjectId()));
     }
 
     @Test
     public void findById_whenUserNotFound_throwsException() {
         assertThrows(UserNotFoundException.class,
-                () -> userService.findById(new ObjectId("507f191e810c19729de860ea").toString()));
+                () -> userService.findById(TestUtil.getObjectId()));
     }
 
     @Test
     public void findAllUsers() {
-        UserDO userDO = mock(UserDO.class);
-        User user = mock(User.class);
-        List<User> users = List.of(user);
+        List<User> users = List.of(mock(User.class));
 
         when(userRepository.findAll()).thenReturn(users);
-        when(mapper.toUserDO(any(), any())).thenReturn(userDO);
+        when(mapper.toUserDO(any(), any())).thenReturn(new UserDO());
 
         assertEquals(1, userService.findAll().size());
     }
 
     @Test
     public void addUser() {
-        UserDO userDO = UserDO.builder().email("test@gmail.com").username("test").build();
-        User user = new User();
-        user.setCountry("RO");
-        UserCountry userCountry = UserCountry.builder().name("RO").build();
+        when(userRepository.findByEmail(anyString())).thenReturn(null);
+        when(userRepository.findByUsername(anyString())).thenReturn(null);
+        when(userRepository.save(any())).thenReturn(new User());
+        when(mapper.toUser(any())).thenReturn(new User());
+        when(mapper.toUserDO(any(), any())).thenReturn(new UserDO());
 
-        when(userRepository.findByEmail(Mockito.anyString())).thenReturn(null);
-        when(userRepository.findByUsername(Mockito.anyString())).thenReturn(null);
-        when(userRepository.save(any(User.class))).thenReturn(user);
-        when(mapper.toUser(any(UserDO.class))).thenReturn(user);
-        when(mapper.toUserDO(any(), any())).thenReturn(userDO);
-
-        assertNotNull(userService.addUser(userDO));
+        assertNotNull(userService.addUser(TestUtil.getUserDO()));
     }
 
     @Test
@@ -113,56 +98,46 @@ public class UserServiceTest {
 
     @Test
     public void addUser_EmailAlreadyExists_ThrowsException() {
-        UserDO userDO = UserDO.builder().email("test").username("test").build();
-        when(userRepository.findByEmail(Mockito.anyString())).thenReturn(mock(User.class));
+        when(userRepository.findByEmail(anyString())).thenReturn(new User());
 
         assertThrows(IllegalArgumentException.class,
-                () -> userService.addUser(userDO));
+                () -> userService.addUser(TestUtil.getUserDO()));
     }
 
     @Test
     public void addUser_UsernameAlreadyExists_ThrowsException() {
-        UserDO userDO = UserDO.builder().email("test").username("test").build();
-
-        when(userRepository.findByEmail(Mockito.anyString())).thenReturn(null);
-        when(userRepository.findByUsername(Mockito.anyString())).thenReturn(mock(User.class));
+        when(userRepository.findByEmail(anyString())).thenReturn(null);
+        when(userRepository.findByUsername(anyString())).thenReturn(new User());
 
         assertThrows(IllegalArgumentException.class,
-                () -> userService.addUser(userDO));
+                () -> userService.addUser(TestUtil.getUserDO()));
     }
 
     @Test
     public void updateUser() {
-        UserDO userDO = UserDO.builder().email("test@gmail.com").username("test").build();
-        User user = new User();
-        user.setCountry("RO");
-
-        when(userRepository.findById(any())).thenReturn(Optional.of(user));
+        when(userRepository.findById(any())).thenReturn(Optional.of(new User()));
         Mockito.doNothing().when(mapper).update(any(), any());
-        when(userRepository.save(any(User.class))).thenReturn(user);
-        when(mapper.toUserDO(any(), any())).thenReturn(userDO);
+        when(userRepository.save(any())).thenReturn(new User());
+        when(mapper.toUserDO(any(), any())).thenReturn(new UserDO());
 
-        assertNotNull(userService.updateUser(userDO));
+        assertNotNull(userService.updateUser(TestUtil.getUserDO()));
     }
 
     @Test
     public void updateUser_EmailAlreadyExists_ThrowsException() {
-        UserDO userDO = UserDO.builder().email("test").username("test").build();
-        when(userRepository.findByEmail(Mockito.anyString())).thenReturn(mock(User.class));
+        when(userRepository.findByEmail(anyString())).thenReturn(new User());
 
         assertThrows(IllegalArgumentException.class,
-                () -> userService.updateUser(userDO));
+                () -> userService.updateUser(TestUtil.getUserDO()));
     }
 
     @Test
     public void updateUser_UsernameAlreadyExists_ThrowsException() {
-        UserDO userDO = UserDO.builder().email("test").username("test").build();
-
-        when(userRepository.findByEmail(Mockito.anyString())).thenReturn(null);
-        when(userRepository.findByUsername(Mockito.anyString())).thenReturn(mock(User.class));
+        when(userRepository.findByEmail(anyString())).thenReturn(null);
+        when(userRepository.findByUsername(anyString())).thenReturn(new User());
 
         assertThrows(IllegalArgumentException.class,
-                () -> userService.updateUser(userDO));
+                () -> userService.updateUser(TestUtil.getUserDO()));
     }
 
     @Test
@@ -175,18 +150,15 @@ public class UserServiceTest {
 
     @Test
     public void findByName() {
-        UserCountry userCountry = UserCountry.builder().name("RO").build();
-        when(userCountryRepository.findByName(Mockito.any())).thenReturn(userCountry);
-        when(countryMapper.toDomainObject(Mockito.any())).thenReturn(new UserCountryDO());
+        when(userCountryRepository.findByName(any())).thenReturn(TestUtil.getUserCountryRO());
+        when(countryMapper.toDomainObject(any())).thenReturn(new UserCountryDO());
 
         assertNotNull(userService.findByName("RO"));
     }
 
     @Test
     public void removeUser() {
-        ObjectId objectId = new ObjectId("507f191e810c19729de860ea");
-        userService.removeUser(objectId.toString());
-
-        Mockito.verify(userRepository).delete(any(User.class));
+        userService.removeUser(TestUtil.getObjectId());
+        Mockito.verify(userRepository).delete(any());
     }
 }

@@ -1,4 +1,4 @@
-package ro.agilehub.javacourse.car.hire.user.service.mapper;
+package ro.agilehub.javacourse.car.hire.user.mapper;
 
 import org.bson.types.ObjectId;
 import org.mapstruct.Mapper;

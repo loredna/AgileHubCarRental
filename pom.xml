@@ -97,11 +97,10 @@
                 <configuration>
                     <excludes>
                         <exclude>**/*MapperImpl.*</exclude>
-                        <exclude>ro/agilehub/javacourse/car/hire/user/controller/error/**/*</exclude>
-                        <exclude>ro/agilehub/javacourse/car/hire/user/controller/mapper/**/*</exclude>
-                        <exclude>ro/agilehub/javacourse/car/hire/user/controller/mapper/**/*</exclude>
-                        <exclude>ro/agilehub/javacourse/car/hire/user/domain/**/*</exclude>
-                        <exclude>ro/agilehub/javacourse/car/hire/user/entity/**/*</exclude>
+                        <exclude>**/error/**/*</exclude>
+                        <exclude>**/mapper/**/*</exclude>
+                        <exclude>**/domain/**/*</exclude>
+                        <exclude>**/entity/**/*</exclude>
                     </excludes>
                 </configuration>
                 <executions>

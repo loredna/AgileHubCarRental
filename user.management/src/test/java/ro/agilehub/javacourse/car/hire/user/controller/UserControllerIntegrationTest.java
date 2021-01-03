@@ -36,13 +36,13 @@ public class UserControllerIntegrationTest {
         var postResult = mvc.perform(post("/user")
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(input)))
-                .andExpect(status().is2xxSuccessful())
+                .andExpect(status().isOk())
                 .andReturn();
 
         var createdDTO = objectMapper.readValue(postResult.getResponse().getContentAsString(), UserDTO.class);
 
         var getResult = mvc.perform(get("/user/" + createdDTO.getId()))
-                .andExpect(status().is2xxSuccessful())
+                .andExpect(status().isOk())
                 .andReturn();
 
         var userDTO = objectMapper.readValue(getResult.getResponse().getContentAsString(), UserDTO.class);

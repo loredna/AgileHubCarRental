@@ -1,4 +1,4 @@
-package ro.agilehub.javacourse.car.hire.user.controller.error;
+package ro.agilehub.javacourse.car.hire.user.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,33 +12,14 @@ import java.util.Date;
 @RestControllerAdvice
 public class ErrorAdviceHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(value = UserNotFoundException.class)
+    @ExceptionHandler(value = {UserNotFoundException.class, EmailNotFoundException.class, UsernameNotFoundException.class})
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    protected ErrorMessage emailNotFound(
+    protected ErrorMessage notFound(
             UserNotFoundException ex, WebRequest request) {
         ErrorMessage message = new ErrorMessage(HttpStatus.NOT_FOUND.value(),
                 new Date(), ex.getMessage(), request.getDescription(false));
         return message;
     }
-
-    @ExceptionHandler(value = EmailNotFoundException.class)
-    @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    protected ErrorMessage emailNotFound(
-            EmailNotFoundException ex, WebRequest request) {
-        ErrorMessage message = new ErrorMessage(HttpStatus.NOT_FOUND.value(),
-                new Date(), ex.getMessage(), request.getDescription(false));
-        return message;
-    }
-
-    @ExceptionHandler(value = UsernameNotFoundException.class)
-    @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    protected ErrorMessage usernameNotFound(
-            UsernameNotFoundException ex, WebRequest request) {
-        ErrorMessage message = new ErrorMessage(HttpStatus.NOT_FOUND.value(),
-                new Date(), ex.getMessage(), request.getDescription(false));
-        return message;
-    }
-
 
     @ExceptionHandler(value = IllegalArgumentException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)

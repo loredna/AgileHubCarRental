@@ -1,6 +1,5 @@
 package ro.agilehub.javacourse.car.hire.user.entity;
 
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.bson.types.ObjectId;

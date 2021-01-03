@@ -6,8 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import ro.agilehub.javacourse.car.hire.api.model.UserDTO;
 import ro.agilehub.javacourse.car.hire.api.specification.UserApi;
-import ro.agilehub.javacourse.car.hire.user.controller.mapper.UserDTOMapper;
 import ro.agilehub.javacourse.car.hire.user.domain.UserDO;
+import ro.agilehub.javacourse.car.hire.user.mapper.UserDTOMapper;
 import ro.agilehub.javacourse.car.hire.user.service.UserService;
 
 import javax.validation.Valid;
