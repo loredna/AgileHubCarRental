@@ -18,6 +18,10 @@ tags:
     description: fleet endpoint
   - name: rental
     description: rental endpoint
+security:
+  - oAuth:
+      - write
+      - read
 paths:
   /user:
     get:
@@ -612,3 +616,13 @@ components:
             - ACTIVE
             - CANCELLED
           description: status of the car
+  securitySchemes:
+    oAuth:
+      type: oauth2
+      description: This API uses OAuth2 with the password flow
+      flows:
+        password:
+          tokenUrl: /oauth/token
+          scopes:
+            read: get information from the API
+            write: use the API to make changes to the supporting data model

@@ -9,6 +9,7 @@ import ro.agilehub.javacourse.car.hire.api.specification.UserApi;
 import ro.agilehub.javacourse.car.hire.user.domain.UserDO;
 import ro.agilehub.javacourse.car.hire.user.mapper.UserDTOMapper;
 import ro.agilehub.javacourse.car.hire.user.service.UserService;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 
 @RestController
+@PreAuthorize("hasAuthority('MANAGER')")
 @RequiredArgsConstructor
 public class UserController implements UserApi {
 
