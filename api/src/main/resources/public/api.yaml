@@ -14,7 +14,7 @@ servers:
 tags:
   - name: user
     description: user endpoint
-  - name: fleet
+  - name: car
     description: fleet endpoint
   - name: rental
     description: rental endpoint
@@ -414,8 +414,7 @@ paths:
           name: id
           required: true
           schema:
-            type: integer
-            format: int32
+            type: string
       responses:
         '200':
           description: success
@@ -444,8 +443,7 @@ paths:
           name: id
           required: true
           schema:
-            type: integer
-            format: int32
+            type: string
       responses:
         '200':
           description: success
@@ -588,16 +586,13 @@ components:
       type: object
       properties:
         id:
-          type: integer
-          format: int32
+          type: string
           description: id of the rental
         userId:
-          type: integer
-          format: int32
+          type: string
           description: id of the user
         carId:
-          type: integer
-          format: int32
+          type: string
           description: id of the car
         startDateTime:
           type: string
@@ -607,7 +602,7 @@ components:
           type: string
           format: date-time
           description: the end date and time on which the reservation was cancelled
-        status:
+        rentalStatus:
           type: string
           enum:
             - ACTIVE
