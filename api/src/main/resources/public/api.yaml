@@ -271,8 +271,7 @@ paths:
           name: id
           required: true
           schema:
-            type: integer
-            format: int32
+            type: string
       responses:
         '200':
           description: success
@@ -301,8 +300,7 @@ paths:
           name: id
           required: true
           schema:
-            type: integer
-            format: int32
+            type: string
       responses:
         '200':
           description: success
@@ -555,8 +553,7 @@ components:
       type: object
       properties:
         id:
-          type: integer
-          format: int32
+          type: string
           description: id of the car
         make:
           type: string
@@ -581,7 +578,7 @@ components:
           type: string
           example: Minicompact, Compact, Mid-Size, Large
           description: size class of the car
-        status:
+        carStatus:
           type: string
           enum:
             - ACTIVE

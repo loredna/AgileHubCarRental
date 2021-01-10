@@ -29,7 +29,7 @@ public class UserController implements UserApi {
 
     @Override
     public ResponseEntity<UserDTO> addUser(@Valid UserDTO userDTO) {
-        UserDO userDO = mapper.toUserDO(userDTO);;
+        UserDO userDO = mapper.toUserDO(userDTO);
         return ResponseEntity.ok(mapper.toUserDTO(userService.addUser(userDO)));
     }
 

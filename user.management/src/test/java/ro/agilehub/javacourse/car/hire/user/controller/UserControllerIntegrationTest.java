@@ -31,8 +31,8 @@ public class UserControllerIntegrationTest {
     @Test
     @WithMockUser("jack")
     public void whenAddUserOk_thenFindById() throws Exception {
-        final String email = "loredana_costea@gmail.com";
-        final String username = "loredanacostea";
+        final String email = "loredana_costea@test.com";
+        final String username = "loredanacosteatest";
         var input = new UserDTO().email(email).username(username);
 
         var postResult = mvc.perform(post("/user")

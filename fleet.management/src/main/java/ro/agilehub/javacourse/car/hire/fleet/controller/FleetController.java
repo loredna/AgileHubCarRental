@@ -1,81 +1,62 @@
 package ro.agilehub.javacourse.car.hire.fleet.controller;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;
 import ro.agilehub.javacourse.car.hire.api.model.CarDTO;
 import ro.agilehub.javacourse.car.hire.api.specification.FleetApi;
+import ro.agilehub.javacourse.car.hire.fleet.domain.CarDO;
+import ro.agilehub.javacourse.car.hire.fleet.mapper.CarDTOMapper;
+import ro.agilehub.javacourse.car.hire.fleet.service.FleetService;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-import static java.util.Objects.isNull;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static java.util.stream.Collectors.toList;
 
 @RestController
+@PreAuthorize("hasAuthority('MANAGER')")
+@RequiredArgsConstructor
 public class FleetController implements FleetApi {
 
-    private final List<CarDTO> cars = new ArrayList<>();
+    @Autowired
+    private FleetService fleetService;
+
+    @Autowired
+    private CarDTOMapper mapper;
 
     @Override
     public ResponseEntity<CarDTO> addCar(@Valid CarDTO carDTO) {
-        carDTO.setId(1);
-        carDTO.setStatus(CarDTO.StatusEnum.ACTIVE);
-        cars.add(carDTO);
-        return ResponseEntity.ok(carDTO);
+        CarDO carDO = mapper.toCarDO(carDTO);
+        carDO.setStatus(CarDTO.CarStatusEnum.ACTIVE);
+        return ResponseEntity.ok(mapper.toCarDTO(fleetService.addCar(carDO)));
     }
 
     @Override
-    public ResponseEntity<CarDTO> getCar(Integer id) {
-        return cars.stream()
-                .filter(carDTO -> carDTO.getId().equals(id))
-                .findFirst()
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<CarDTO> getCar(String id) {
+        CarDO carDO = fleetService.findById(id);
+        return ResponseEntity.ok(mapper.toCarDTO(carDO));
     }
 
     @Override
     public ResponseEntity<List<CarDTO>> getCars() {
-        return ResponseEntity.ok(cars);
+        List<CarDO> cars = fleetService.findAll();
+        return ResponseEntity.ok(cars.stream()
+                .map(carDO -> mapper.toCarDTO(carDO))
+                .collect(toList()));
     }
 
     @Override
     public ResponseEntity<CarDTO> updateCar(@Valid CarDTO carDTO) {
-        cars.stream()
-                .filter(carDTO1 -> carDTO.getId().equals(carDTO1.getId()))
-                .findFirst()
-                .ifPresent(
-                        carDTO1 -> {
-                            if (isNotBlank(carDTO.getMake())) {
-                                carDTO1.setMake(carDTO.getMake());
-                            }
-                            if (isNotBlank(carDTO.getModel())) {
-                                carDTO1.setModel(carDTO.getModel());
-                            }
-                            if (!isNull(carDTO.getMileage())) {
-                                carDTO1.setMileage(carDTO.getMileage());
-                            }
-                            if (isNotBlank(carDTO.getFuel())) {
-                                carDTO1.setFuel(carDTO.getFuel());
-                            }
-                            if (isNotBlank(carDTO.getSizeClass())) {
-                                carDTO1.setSizeClass(carDTO.getSizeClass());
-                            }
-                            if (!isNull(carDTO.getStatus())) {
-                                carDTO1.setStatus(carDTO.getStatus());
-                            }
-                        });
-        return ResponseEntity.ok().build();
+        CarDO carDO = mapper.toCarDO(carDTO);
+        return ResponseEntity.ok(mapper.toCarDTO(fleetService.updateCar(carDO)));
     }
 
     @Override
-    public ResponseEntity<Void> removeCar(Integer id) {
-        Optional<CarDTO> optionalCarDTO =
-                cars.stream()
-                        .filter(carDTO -> carDTO.getId().equals(id))
-                        .findFirst();
-        optionalCarDTO.ifPresent(cars::remove);
+    public ResponseEntity<Void> removeCar(String id) {
+        fleetService.removeCar(id);
         return ResponseEntity.ok().build();
     }
 }
