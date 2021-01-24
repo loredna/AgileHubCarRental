@@ -35,12 +35,14 @@ public class FleetController implements FleetApi {
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('MANAGER','CUSTOMER')")
     public ResponseEntity<CarDTO> getCar(String id) {
         CarDO carDO = fleetService.findById(id);
         return ResponseEntity.ok(mapper.toCarDTO(carDO));
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('MANAGER','CUSTOMER')")
     public ResponseEntity<List<CarDTO>> getCars() {
         List<CarDO> cars = fleetService.findAll();
         return ResponseEntity.ok(cars.stream()

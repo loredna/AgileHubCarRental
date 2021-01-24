@@ -128,7 +128,7 @@
                 <configuration>
                     <excludes>
                         <exclude>**/*MapperImpl.*</exclude>
-                        <exclude>**/error/**/*</exclude>
+                        <exclude>**/exception/**/*</exclude>
                         <exclude>**/mapper/**/*</exclude>
                         <exclude>**/domain/**/*</exclude>
                         <exclude>**/entity/**/*</exclude>

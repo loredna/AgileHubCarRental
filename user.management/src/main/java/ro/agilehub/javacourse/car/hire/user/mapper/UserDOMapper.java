@@ -14,6 +14,7 @@ public interface UserDOMapper {
 
     @Mapping(target = "id", source = "userDO.id")
     @Mapping(target = "country", source = "userDO.country.name")
+    @Mapping(target = "status", defaultValue = "ACTIVE")
     User toUser(UserDO userDO);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,

@@ -64,8 +64,11 @@ paths:
               username: loredna
               firstName: Costea
               lastName: Loredana
-              country: Romania
+              country: {
+                name: Romania
+              }
               licenseNumber: 999888
+              title: Engineer
       responses:
         '201':
           description: the created user
@@ -96,7 +99,7 @@ paths:
               $ref: '#/components/schemas/UserDTO'
             example:
               lastName: Loredana Iuliana
-              id: 1
+              id: 600d7c69a7973f5dbaba60a4
       responses:
         '200':
           description: the updated user
@@ -240,8 +243,8 @@ paths:
             schema:
               $ref: '#/components/schemas/CarDTO'
             example:
-              model: I3
-              id: 1
+              model: X3
+              id: 600d7e58a1b2416bdd8adb87
       responses:
         '200':
           description: the created car
