@@ -1,12 +1,4 @@
 # Project exclude paths
-/api/target/
-/boot/target/
-/fleet.management/target/
-/user.management/target/
+/**/target/
 /.idea/
-/car.hire.iml
-/api/api.iml
-/boot/boot.iml
-/fleet.management/fleet.management.iml
-/user.management/user.management.iml
-/AgileHubCarRental.iml
+/**/*.iml
