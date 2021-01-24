@@ -42,6 +42,7 @@ public class UserController implements UserApi {
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('MANAGER','CUSTOMER')")
     public ResponseEntity<UserDTO> getUser(String id) {
         UserDO userDO = userService.findById(id);
         return ResponseEntity.ok(mapper.toUserDTO(userDO));
