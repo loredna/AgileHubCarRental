@@ -1,10 +1,10 @@
 openapi: 3.0.1
 info:
-  title: Car Hire API
+  title: Core API
   version: 0.1.0
   contact:
     name: Loredana Costea
-  description: Car Hire API
+  description: User and Car Management
 servers:
   - url: http://localhost:{port}
     description: local environment

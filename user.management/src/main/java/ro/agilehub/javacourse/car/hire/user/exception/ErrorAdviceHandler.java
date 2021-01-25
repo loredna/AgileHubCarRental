@@ -22,10 +22,10 @@ public class ErrorAdviceHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(value = IllegalArgumentException.class)
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @ResponseStatus(value = HttpStatus.CONFLICT)
     protected ErrorMessage badRequest(
             IllegalArgumentException ex, WebRequest request) {
-        ErrorMessage message = new ErrorMessage(HttpStatus.BAD_REQUEST.value(),
+        ErrorMessage message = new ErrorMessage(HttpStatus.CONFLICT.value(),
                 new Date(), ex.getMessage(), request.getDescription(false));
         return message;
     }
